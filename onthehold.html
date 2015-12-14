@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>On the hold - Recreation</title>
+		<script type="text/javascript" src="../libs/three.js"></script>
+		<style>
+			body{
+				margin : 0;
+				overflow : hidden;
+			}
+		</style>
+	</head>
+	
+	<body>
+		<div id="WebGL-output">		
+		</div>
+		
+		<script type="text/javascript">
+			function init(){
+				var colors = ["rgb(37,59,37)","rgb(220,156,21)","rgb(148,138,109)","rgb(250,238,212)","rgb(223,54,10)",
+				"rgb(74,95,175)","rgb(250,190,116)","rgb(234,131,173)","rgb(103,38,18)","rgb(105,193,242)","rgb(230,2,68)","rgb(63,40,22)"];
+				var scene = new THREE.Scene();
+				var camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, 0.1, 1000);
+				var renderer = new THREE.WebGLRenderer();
+				renderer.setClearColor(new THREE.Color(0xEEEEEE));
+				renderer.setSize(window.innerWidth, window.innerHeight);
+		
+				
+				var spotLight = new THREE.SpotLight(0xffffff);
+        		spotLight.position.set(-40, 60, -10);
+        		scene.add(spotLight);
+				
+				var planeGeometry = new THREE.PlaneGeometry(40, 40);
+				var planeMaterial = new THREE.MeshBasicMaterial({color:0xcccccc});
+				var plane = new THREE.Mesh(planeGeometry, planeMaterial);
+				scene.add(plane);
+				
+				
+				
+				for (var i=0; i < 500; i++) {
+				  	var shape = createMesh(new THREE.ShapeGeometry(drawShape(5)));
+        
+        			scene.add(shape);
+				};
+				
+				
+			    for (var m=-20; m < 20; m+=5) {
+			    	for (var n=-20; n < 20; n+=5){
+			    		if (Math.random() < 0.5) {
+			    			var triangleShape = new THREE.Shape();
+			    			triangleShape.moveTo(m,n);
+			    			triangleShape.lineTo(m,n+5);
+			    			triangleShape.lineTo(m+2.5,n+2.5);
+			    			triangleShape.lineTo(m,n);
+			    			
+			    			var triGeo = new THREE.ShapeGeometry(triangleShape);
+			    			var meshMaterial1 = new THREE.MeshNormalMaterial();
+            				meshMaterial1.side = THREE.DoubleSide;
+            				var wireFrameMat1 = new THREE.MeshBasicMaterial({color:0x000000});
+            				wireFrameMat1.wireframe = false;
+
+            				var triMesh = THREE.SceneUtils.createMultiMaterialObject(triGeo, [meshMaterial1, wireFrameMat1]);
+							
+							scene.add(triMesh);				
+			    		}
+			    	}
+				}
+				
+				for (var m=20; m > -20; m-=5) {
+			    	for (var n=20; n > -20; n-=5){
+			    		if (Math.random() < 0.5) {
+			    			var triangleShape = new THREE.Shape();
+			    			triangleShape.moveTo(m,n);
+			    			triangleShape.lineTo(m,n-5);
+			    			triangleShape.lineTo(m-2.5,n-2.5);
+			    			triangleShape.lineTo(m,n);
+			    			
+			    			var triGeo = new THREE.ShapeGeometry(triangleShape);
+			    			var meshMaterial1 = new THREE.MeshNormalMaterial();
+            				meshMaterial1.side = THREE.DoubleSide;
+            				var wireFrameMat1 = new THREE.MeshBasicMaterial({color:0x000000});
+            				wireFrameMat1.wireframe = false;
+            				var triMesh = THREE.SceneUtils.createMultiMaterialObject(triGeo, [meshMaterial1, wireFrameMat1]);
+							scene.add(triMesh);				
+			    		}
+			    	}
+				}
+				
+				camera.position.z = 55;
+				camera.lookAt(scene.position);
+				
+				document.getElementById("WebGL-output").appendChild(renderer.domElement);
+				renderer.render(scene, camera);
+				
+				
+				
+				function drawShape(n) {
+
+            		
+            		var shape = new THREE.Shape();
+					
+					var x = Math.floor(Math.random() * 41) - 20;
+					var y = Math.floor(Math.random() * 41) - 20;
+            		
+            		shape.moveTo(x, y,0);
+					
+					for (var i=1; i < n; i++) {
+					  	var x = Math.floor(Math.random() * 41) - 20;
+					  	var y = Math.floor(Math.random() * 41) - 20;
+					  	shape.lineTo(x, y,0);
+					};
+
+            		
+            		return shape;
+        		}
+
+        		function createMesh(geom) {
+
+            		
+            		var meshMaterial = new THREE.MeshNormalMaterial();
+            		meshMaterial.side = THREE.DoubleSide;
+            		var c = Math.floor(Math.random() * 12);
+            		var wireFrameMat = new THREE.MeshBasicMaterial({color:colors[c]});
+            		wireFrameMat.wireframe = false;
+
+            		
+            		var mesh = THREE.SceneUtils.createMultiMaterialObject(geom, [meshMaterial, wireFrameMat]);
+
+            		return mesh;
+        		}
+			}
+			window.onload = init;
+		</script>
+	</body>
+</html>
